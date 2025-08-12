@@ -1,7 +1,10 @@
 
 
-public class UseHttpsRedirection
+using Microsoft.AspNetCore.Identity;
+
+public class MSCUser : IdentityUser
 {
-    public Guid Id { get; set; }
+    [PersonalData]
+    public List<Movie> movies { get; set; } = [];
     
 }

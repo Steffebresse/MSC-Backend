@@ -2,12 +2,12 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class Movie
+public class Movie : IDisposable
 {
     [Required]
     public Guid Id { get; set; }
     [Required]
-    public Guid Title { get; set; }
+    public string Title { get; set; }
     public DateTime ReleaseDate { get; set; }
     public int Runtime { get; set; }
     public string Plot { get; set; } = string.Empty;
@@ -17,9 +17,10 @@ public class Movie
     public List<string> Directors { get; set; } = new();
     public Uri? Poster { get; set; } // antar det är bättre att spara med URI då slipper jag konvertera skiten?
 
+    public List<MSCUser> mSCUsers { get; set; } = [];
 
-
-
-
-
+    public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -5,7 +5,7 @@
 namespace MSC_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class initial2 : Migration
+    public partial class initialskrillex2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

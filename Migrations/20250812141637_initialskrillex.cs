@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MSC_Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class initialskrillex : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,26 @@ namespace MSC_Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "movies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Runtime = table.Column<int>(type: "int", nullable: false),
+                    Plot = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImdbRating = table.Column<float>(type: "real", nullable: false),
+                    MscRating = table.Column<float>(type: "real", nullable: false),
+                    Actors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Directors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Poster = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_movies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +176,35 @@ namespace MSC_Backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MSCUserMovie",
+                columns: table => new
+                {
+                    mSCUsersId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    moviesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MSCUserMovie", x => new { x.mSCUsersId, x.moviesId });
+                    table.ForeignKey(
+                        name: "FK_MSCUserMovie_AspNetUsers_mSCUsersId",
+                        column: x => x.mSCUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MSCUserMovie_movies_moviesId",
+                        column: x => x.moviesId,
+                        principalTable: "movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "movies",
+                columns: new[] { "Id", "Actors", "Directors", "ImdbRating", "MscRating", "Plot", "Poster", "ReleaseDate", "Runtime", "Title" },
+                values: new object[] { new Guid("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"), "[]", "[]", 0f, 0f, "", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "TestTitle" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,6 +243,11 @@ namespace MSC_Backend.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MSCUserMovie_moviesId",
+                table: "MSCUserMovie",
+                column: "moviesId");
         }
 
         /// <inheritdoc />
@@ -215,10 +269,16 @@ namespace MSC_Backend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "MSCUserMovie");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "movies");
         }
     }
 }

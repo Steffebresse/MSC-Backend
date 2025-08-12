@@ -5,8 +5,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class DbContext : IdentityDbContext<IdentityUser>
+public class MyDbContext : IdentityDbContext<MSCUser>
 {
-    public DbContext(DbContextOptions<DbContext> options) : base(options)
-    {}
+
+    public DbSet<Movie> movies { get; set; }
+    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
+    { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder); // Always call this for Identity
+
+        var seedId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"); 
+        modelBuilder.Entity<Movie>().HasData(new Movie
+        {
+            Id = seedId,
+            Title = "TestTitle"
+        });
+    }
 }

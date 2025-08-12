@@ -3,11 +3,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = builder.Configuration["DataBase:ConnectionString"];
-builder.Services.AddDbContext<DbContext>(
+builder.Services.AddDbContext<MyDbContext>(
     options => options.UseSqlServer(connectionString)
 );
+
+
+
 builder.Services.AddIdentity();
+builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -15,17 +20,24 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
 
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    });
+
+}
 
 
 
 app.MapIdentityApi<IdentityUser>();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+// controller
+
+app.MapControllers();
 
 app.UseHttpsRedirection();
 
@@ -36,7 +48,7 @@ public static class ServiceCollections {
     {
         collection.AddAuthorization();
         collection.AddIdentityApiEndpoints<IdentityUser>()
-            .AddEntityFrameworkStores<DbContext>();
+            .AddEntityFrameworkStores<MyDbContext>();
 
         return collection;   
     }
