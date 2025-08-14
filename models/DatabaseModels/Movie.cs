@@ -17,7 +17,7 @@ public class Movie : IDisposable
     public List<string> Directors { get; set; } = new();
     public Uri? Poster { get; set; } // antar det är bättre att spara med URI då slipper jag konvertera skiten?
 
-    public List<MSCUser> mSCUsers { get; set; } = [];
+    public List<ApplicationUser > mSCUsers { get; set; } = [];
 
     public void Dispose()
     {

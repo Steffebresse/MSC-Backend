@@ -24,7 +24,7 @@ public class TestController : ControllerBase
     }
     [Authorize]
     [HttpPost("Logout")]
-    public async Task<IActionResult> Logout( SignInManager<MSCUser> signInManager)
+    public async Task<IActionResult> Logout( SignInManager<ApplicationUser > signInManager)
     {
         string empty = "fattar inte";
         if (empty != null)
@@ -37,17 +37,22 @@ public class TestController : ControllerBase
     
     [Authorize]
     [HttpPost("AddTestMovie")]
-    public async Task<IActionResult> TestAddMovie(UserManager<MSCUser> userManager)
+    public async Task<IActionResult> TestAddMovie(UserManager<ApplicationUser> userManager)
     {
         var movieToAdd = await _context.movies.FirstOrDefaultAsync();
 
-        var user = await userManager.GetUserAsync(User);
-        if (user == null)
-            return Unauthorized();
+        var userId = userManager.GetUserId(User);
+
+        var user = await userManager.Users
+            .Include(u => u.movies)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        
+        if (user == null || user.movies != null)
+            return Unauthorized("Doesnt work test");
         user.movies.Add(movieToAdd);
         await userManager.UpdateAsync(user);
 
-        return Ok(user);
+        return Ok();
         
     }
 }

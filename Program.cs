@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
 
 
 
-app.MapIdentityApi<IdentityUser>();
+app.MapIdentityApi<ApplicationUser>();
 
 // controller
 
@@ -43,13 +43,22 @@ app.UseHttpsRedirection();
 
 app.Run();
 
-public static class ServiceCollections {
+public static class ServiceCollections
+{
     public static IServiceCollection AddIdentity(this IServiceCollection collection)
     {
         collection.AddAuthorization();
-        collection.AddIdentityApiEndpoints<IdentityUser>()
+        collection.AddIdentityApiEndpoints<ApplicationUser>()
             .AddEntityFrameworkStores<MyDbContext>();
 
-        return collection;   
+
+        return collection;
     }
 }
+
+// TODO REMINDERS
+/*
+ - Testa att ändra Apllicationuser till något annat namn, bekräfta om det är ett krav
+
+ 
+*/
