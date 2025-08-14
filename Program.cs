@@ -59,6 +59,6 @@ public static class ServiceCollections
 // TODO REMINDERS
 /*
  - Testa att ändra Apllicationuser till något annat namn, bekräfta om det är ett krav
+ - Gör en CI/CD
 
- 
 */
