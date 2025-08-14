@@ -9,7 +9,7 @@ builder.Services.AddDbContext<MyDbContext>(
     options => options.UseSqlServer(connectionString)
 );
 
-
+builder.Services.AddTransient<MovieApiService>();
 
 builder.Services.AddIdentity();
 builder.Services.AddControllers();

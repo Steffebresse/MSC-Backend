@@ -9,12 +9,14 @@ using Microsoft.EntityFrameworkCore;
 public class TestController : ControllerBase
 {
     private readonly MyDbContext _context;
-    public TestController(MyDbContext context)
+    private readonly MovieApiService _MApiService;
+    public TestController(MyDbContext context, MovieApiService MApiService)
     {
         _context = context;
+        _MApiService = MApiService;
     }
 
-   
+
     [Authorize]
     [HttpGet("tESTthIS")]
     public IActionResult Test123()
@@ -24,7 +26,7 @@ public class TestController : ControllerBase
     }
     [Authorize]
     [HttpPost("Logout")]
-    public async Task<IActionResult> Logout( SignInManager<ApplicationUser > signInManager)
+    public async Task<IActionResult> Logout(SignInManager<ApplicationUser> signInManager)
     {
         string empty = "fattar inte";
         if (empty != null)
@@ -34,7 +36,7 @@ public class TestController : ControllerBase
         }
         return Unauthorized();
     }
-    
+
     [Authorize]
     [HttpPost("AddTestMovie")]
     public async Task<IActionResult> TestAddMovie(UserManager<ApplicationUser> userManager)
@@ -46,13 +48,34 @@ public class TestController : ControllerBase
         var user = await userManager.Users
             .Include(u => u.movies)
             .FirstOrDefaultAsync(u => u.Id == userId);
-        
+
         if (user == null || user.movies != null)
             return Unauthorized("Doesnt work test");
         user.movies.Add(movieToAdd);
         await userManager.UpdateAsync(user);
 
         return Ok();
+
+    }
+    
+    [Authorize]
+    [HttpPost("AddMovieFromIMDB")]
+    public async Task<IActionResult> TestAddMovieFromIMDB(UserManager<ApplicationUser> userManager, [FromBody] string movieTitle)
+    {
+        var movieToAdd = await _MApiService.TryToAddMovieToDb(movieTitle);
         
+        var userId = userManager.GetUserId(User);
+
+        var user = await userManager.Users
+            .Include(u => u.movies)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null || user.movies != null)
+            return Unauthorized("Doesnt work test");
+        user.movies.Add(movieToAdd);
+        await userManager.UpdateAsync(user);
+
+        return Ok();
+
     }
 }
