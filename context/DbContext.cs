@@ -16,11 +16,21 @@ public class MyDbContext : IdentityDbContext<ApplicationUser >
     {
         base.OnModelCreating(modelBuilder); // Always call this for Identity first
 
-        var seedId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"); 
+        var seedId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
         modelBuilder.Entity<Movie>().HasData(new Movie
         {
             Id = seedId,
             Title = "TestTitle"
         });
+        
+        modelBuilder.Entity<Movie>()
+            .HasMany(m => m.Ratings)
+            .WithOne(r => r.Movie)
+            .HasForeignKey(r => r.MovieId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RatingSources>()
+            .HasIndex(r => new { r.MovieId, r.Source })  
+            .IsUnique();
     }
 }

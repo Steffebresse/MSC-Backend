@@ -26,15 +26,13 @@ public class MovieApiService
         var response = await client.GetAsync(endPoint + $"t={movieTitle}");
         if (!response.IsSuccessStatusCode) return null;
 
+        
+
         var json = await response.Content.ReadAsStringAsync();
 
-        using var doc = JsonDocument.Parse(json);
-        var title = doc.RootElement.GetProperty("Title").GetString();
+        var DTOMovie = JsonSerializer.Deserialize<MovieDTO>(json);
 
-        if (string.IsNullOrWhiteSpace(title))
-            return null;
-
-        var movieToAdd = new Movie { Title = title };
+        var movieToAdd = DTOMovie.Map(DTOMovie);
 
         await _context.movies.AddAsync(movieToAdd);
         await _context.SaveChangesAsync();
