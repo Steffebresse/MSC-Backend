@@ -18,6 +18,7 @@ public class Movie : IDisposable
     public List<string> Actors { get; set; } = new();
     public List<string> Directors { get; set; } = new();
     public Uri? Poster { get; set; } // antar det är bättre att spara med URI då slipper jag konvertera skiten?
+    public List<Discussion>? Discussion { get; set; }
 
     public List<ApplicationUser> mSCUsers { get; set; } = [];
 
@@ -41,6 +42,7 @@ public class MovieDTO
     public string Actors { get; set; }
     public string Director { get; set; }
     public string Poster { get; set; }
+    
 
     public Movie Map(MovieDTO movie)
     {

@@ -29,6 +29,23 @@ public class MyDbContext : IdentityDbContext<ApplicationUser >
             .HasForeignKey(r => r.MovieId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<Movie>()
+            .HasMany(m => m.Discussion)
+            .WithOne(d => d.Movie)
+            .HasForeignKey(d => d.MovieId);
+
+        modelBuilder.Entity<Discussion>()
+            .HasOne(d => d.User)
+            .WithMany(u => u.Discussions)
+            .HasForeignKey(d => d.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Post>()
+            .HasOne(p => p.Discussion)
+            .WithMany(d => d.Posts)
+            .HasForeignKey(d => d.DisucssionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<RatingSources>()
             .HasIndex(r => new { r.MovieId, r.Source })  
             .IsUnique();
