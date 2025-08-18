@@ -1,0 +1,10 @@
+
+Nästa dags jobb, fixa RIKTIGA kontrollers och få en MVP.
+19e Augusti
+Kunna göra Posts, Discusioner, hämta filmer och se till att allt fungerar i Synnergi!!!
+
+20e Augusti
+Läs på igen om allt du har gjort!
+
+21a Augusti
+Gör en CI/CD
