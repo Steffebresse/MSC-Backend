@@ -8,6 +8,7 @@ public class ApplicationUser : IdentityUser
     public List<Movie> Movies { get; set; } = [];
     [PersonalData]
     public List<Discussion>? Discussions { get; set; }
+    public List<Post>? Posts { get; set; }
     public string firstName { get; set; } = string.Empty;
 
     

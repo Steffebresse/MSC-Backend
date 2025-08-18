@@ -34,7 +34,7 @@ public class MovieApiService
 
         var movieToAdd = DTOMovie.Map(DTOMovie);
 
-        await _context.movies.AddAsync(movieToAdd);
+        await _context.Movies.AddAsync(movieToAdd);
         await _context.SaveChangesAsync();
 
         return movieToAdd;

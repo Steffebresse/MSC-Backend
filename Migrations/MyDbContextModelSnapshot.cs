@@ -92,17 +92,46 @@ namespace MSC_Backend.Migrations
 
             modelBuilder.Entity("ApplicationUserMovie", b =>
                 {
+                    b.Property<Guid>("MoviesId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("mSCUsersId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("moviesId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasKey("MoviesId", "mSCUsersId");
 
-                    b.HasKey("mSCUsersId", "moviesId");
-
-                    b.HasIndex("moviesId");
+                    b.HasIndex("mSCUsersId");
 
                     b.ToTable("ApplicationUserMovie");
+                });
+
+            modelBuilder.Entity("Discussion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PostedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Discussions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -279,7 +308,7 @@ namespace MSC_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("movies");
+                    b.ToTable("Movies");
 
                     b.HasData(
                         new
@@ -294,6 +323,31 @@ namespace MSC_Backend.Migrations
                             Runtime = "",
                             Title = "TestTitle"
                         });
+                });
+
+            modelBuilder.Entity("Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DiscussionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PostedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiscussionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("RatingSources", b =>
@@ -323,17 +377,36 @@ namespace MSC_Backend.Migrations
 
             modelBuilder.Entity("ApplicationUserMovie", b =>
                 {
+                    b.HasOne("Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MoviesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("mSCUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.HasOne("Movie", null)
-                        .WithMany()
-                        .HasForeignKey("moviesId")
+            modelBuilder.Entity("Discussion", b =>
+                {
+                    b.HasOne("Movie", "Movie")
+                        .WithMany("Discussion")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ApplicationUser", "User")
+                        .WithMany("Discussions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -387,6 +460,25 @@ namespace MSC_Backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Post", b =>
+                {
+                    b.HasOne("Discussion", "Discussion")
+                        .WithMany("Posts")
+                        .HasForeignKey("DiscussionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApplicationUser", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Discussion");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RatingSources", b =>
                 {
                     b.HasOne("Movie", "Movie")
@@ -398,8 +490,22 @@ namespace MSC_Backend.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("ApplicationUser", b =>
+                {
+                    b.Navigation("Discussions");
+
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("Discussion", b =>
+                {
+                    b.Navigation("Posts");
+                });
+
             modelBuilder.Entity("Movie", b =>
                 {
+                    b.Navigation("Discussion");
+
                     b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618

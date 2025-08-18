@@ -41,17 +41,17 @@ public class TestController : ControllerBase
     [HttpPost("AddTestMovie")]
     public async Task<IActionResult> TestAddMovie(UserManager<ApplicationUser> userManager)
     {
-        var movieToAdd = await _context.movies.FirstOrDefaultAsync();
+        var movieToAdd = await _context.Movies.FirstOrDefaultAsync();
 
         var userId = userManager.GetUserId(User);
 
         var user = await userManager.Users
-            .Include(u => u.movies)
+            .Include(u => u.Movies)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null || user.movies != null)
+        if (user == null || user.Movies != null)
             return Unauthorized("Doesnt work test");
-        user.movies.Add(movieToAdd);
+        user.Movies.Add(movieToAdd);
         await userManager.UpdateAsync(user);
 
         return Ok();
@@ -67,12 +67,12 @@ public class TestController : ControllerBase
         var userId = userManager.GetUserId(User);
 
         var user = await userManager.Users
-            .Include(u => u.movies)
+            .Include(u => u.Movies)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null || user.movies != null)
+        if (user == null || user.Movies != null)
             return Unauthorized("Doesnt work test");
-        user.movies.Add(movieToAdd);
+        user.Movies.Add(movieToAdd);
         await userManager.UpdateAsync(user);
 
         return Ok();
