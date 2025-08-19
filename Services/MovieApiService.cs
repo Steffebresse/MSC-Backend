@@ -20,13 +20,13 @@ public class MovieApiService
         endPoint = $"http://www.omdbapi.com/?apikey={ApiKey}&";
     }
 
-    
+
     public async Task<Movie?> TryToAddMovieToDb(string movieTitle)
     {
         var response = await client.GetAsync(endPoint + $"t={movieTitle}");
         if (!response.IsSuccessStatusCode) return null;
 
-        
+
 
         var json = await response.Content.ReadAsStringAsync();
 
@@ -38,6 +38,32 @@ public class MovieApiService
         await _context.SaveChangesAsync();
 
         return movieToAdd;
+    }
+
+    public async Task<MovieDTO?> GetMovie(Guid Id)
+    {
+        try
+        {
+            if (_context is not null)
+            {
+                var movie = await _context.Movies.Where(m => m.Id == Id).Include(m => m.Ratings).FirstOrDefaultAsync();
+
+                if (movie is not null)
+                {
+                    var mapped = movie.Map(movie);
+                    return mapped;
+                }
+            }
+        }
+        catch (ArgumentException ex)
+        {
+            System.Console.WriteLine($"Something went wrong: '{ex}'");
+        }
+
+        return null;
+
+      
+        
     }
 
 

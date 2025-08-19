@@ -57,13 +57,13 @@ public class TestController : ControllerBase
         return Ok();
 
     }
-    
+
     [Authorize]
     [HttpPost("AddMovieFromIMDB")]
     public async Task<IActionResult> TestAddMovieFromIMDB(UserManager<ApplicationUser> userManager, [FromBody] string movieTitle)
     {
         var movieToAdd = await _MApiService.TryToAddMovieToDb(movieTitle);
-        
+
         var userId = userManager.GetUserId(User);
 
         var user = await userManager.Users
@@ -77,5 +77,17 @@ public class TestController : ControllerBase
 
         return Ok();
 
+    }
+
+    
+    [HttpGet("TestGetMovie")]
+    public async Task<IActionResult> TestGetMovie(Guid Id)
+    {
+        var gotMovie = await _MApiService.GetMovie(Id);
+
+        if (gotMovie == null)
+            return BadRequest("SOMETHING WENT WRONG");
+
+        return Ok(gotMovie);
     }
 }

@@ -1,6 +1,7 @@
 
 
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Identity.Client;
 
 public class Movie : IDisposable
 {
@@ -27,6 +28,31 @@ public class Movie : IDisposable
         throw new NotImplementedException();
     }
 
+    public MovieDTO Map(Movie movie)
+    {
+        MovieDTO mapped = new();
+        mapped.Title = movie.Title;
+        mapped.imdbID = movie.ImdbId;
+        mapped.Released = movie.ReleaseDate.ToString();
+        mapped.Runtime = movie.Runtime;
+        mapped.Plot = movie.Plot;
+        mapped.Ratings = mapped.Ratings = movie.Ratings?
+            .Select(r => r.Map(r)).ToList();
+        mapped.MscRating = movie.MscRating.ToString();
+        mapped.Actors = (movie.Actors != null && movie.Actors.Any())
+        ? string.Join(", ", movie.Actors.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).Distinct())
+        : null;
+        mapped.Director = (movie.Directors != null && movie.Directors.Any())
+        ? string.Join(", ", movie.Actors.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).Distinct())
+        : null;
+        mapped.Poster = movie.Poster.ToString() ?? null;
+
+        return mapped;
+
+
+    }
+    
+
 
 }
 
@@ -37,7 +63,7 @@ public class MovieDTO
     public string Released { get; set; }
     public string Runtime { get; set; }
     public string Plot { get; set; }
-    public List<RatingSources> Ratings { get; set; } // Fixa ratings senare
+    public List<RatingSourcesDTO> Ratings { get; set; } // Fixa ratings senare
     public string MscRating { get; set; }
     public string Actors { get; set; }
     public string Director { get; set; }
@@ -60,7 +86,8 @@ public class MovieDTO
         {
             rating.MovieId = mapped.Id;
         }
-        mapped.Ratings = movie.Ratings;
+         mapped.Ratings = mapped.Ratings = movie.Ratings?
+            .Select(r => r.Map(r)).ToList();
 
 
         return mapped;
@@ -76,8 +103,42 @@ public class RatingSources
     public Guid Id { get; set; } = Guid.NewGuid();
     [Required]
     public Guid MovieId { get; set; }
-    public Movie Movie { get; set; } 
+    public Movie Movie { get; set; }
     public string Source { get; set; }
     public string Value { get; set; }
+
+    public RatingSourcesDTO Map(RatingSources rating)
+    {
+        RatingSourcesDTO mapped = new();
+
+        mapped.Id = rating.Id;
+        mapped.MovieId = rating.MovieId;
+        mapped.Source = rating.Source;
+        mapped.Value = rating.Value;
+
+        return mapped;
+    }
+}
+
+public class RatingSourcesDTO
+{
+    public Guid Id { get; set; }
+    public Guid MovieId { get; set; }
+    public string Source { get; set; }
+    public string Value { get; set; }
+
+
+    public RatingSources Map(RatingSourcesDTO rating)
+    {
+        RatingSources mapped = new();
+
+        mapped.Id = rating.Id;
+        mapped.MovieId = rating.MovieId;
+        mapped.Source = rating.Source;
+        mapped.Value = rating.Value;
+
+        return mapped;
+    }
+    
 }
 
