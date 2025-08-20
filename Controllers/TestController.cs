@@ -79,7 +79,7 @@ public class TestController : ControllerBase
 
     }
 
-    
+
     [HttpGet("TestGetMovie")]
     public async Task<IActionResult> TestGetMovie(Guid Id)
     {
@@ -89,5 +89,20 @@ public class TestController : ControllerBase
             return BadRequest("SOMETHING WENT WRONG");
 
         return Ok(gotMovie);
+    }
+    [Authorize]
+    [HttpPost("profile")]
+    public async Task<IActionResult> AddToProfile([FromBody] string title, UserManager<ApplicationUser> userManager)
+    {
+        
+
+        var userId = userManager.GetUserId(User);
+
+        var movie = await _MApiService.AddMovieToProfileAsync(title, userId);
+
+        if (movie is null)
+            return NotFound("Movie not found or could not be added.");
+
+        return Ok(movie);
     }
 }
