@@ -1,6 +1,7 @@
 
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 public class Discussion // Dependent since, this need to exist for a post to exist
@@ -27,8 +28,8 @@ public class DiscussionPostDTO
     public string Title { get; set; }
     public string DiscussionContent { get; set; }
     public Guid MovieId { get; set; }
-    public string UserId { get; set; }
-    
+   
+
 }
 
 public class Post // Principal since, this existing is based on the Dependent entity

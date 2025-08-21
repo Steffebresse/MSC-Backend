@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -94,7 +95,7 @@ public class TestController : ControllerBase
     [HttpPost("profile")]
     public async Task<IActionResult> AddToProfile([FromBody] string title, UserManager<ApplicationUser> userManager)
     {
-        
+
 
         var userId = userManager.GetUserId(User);
 
@@ -104,5 +105,22 @@ public class TestController : ControllerBase
             return NotFound("Movie not found or could not be added.");
 
         return Ok(movie);
+    }
+
+    [Authorize]
+    [HttpPost("StartDiscussion")]
+    public async Task<IActionResult> AddDiscussion([FromBody] DiscussionPostDTO postDiscussion, UserManager<ApplicationUser> userManager)
+    {
+        var userId = userManager.GetUserId(User);
+
+        if (userId == null)
+            return BadRequest("UserId not valid");
+
+        var success = await _MApiService.StartDiscussionAsync(postDiscussion, userId);
+
+        if (success != null)
+            return Ok(success);
+
+        return BadRequest("Something went wrong creating the discussion");
     }
 }

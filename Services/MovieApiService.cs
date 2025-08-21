@@ -115,7 +115,7 @@ public class MovieApiService
 
     }
 
-    public async Task<DiscussionPostDTO?> StartDiscussionAsync(DiscussionPostDTO postDto)
+    public async Task<DiscussionPostDTO?> StartDiscussionAsync(DiscussionPostDTO postDto, string userId)
     {
         Discussion postDiscussion = new()
         {
@@ -123,7 +123,7 @@ public class MovieApiService
             Title = postDto.Title,
             DiscussionContent = postDto.DiscussionContent,
             MovieId = postDto.MovieId,
-            UserId = postDto.UserId,
+            UserId = userId,
         };
 
         var addEntity = await _context.AddAsync(postDiscussion);
