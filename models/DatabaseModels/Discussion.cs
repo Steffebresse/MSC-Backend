@@ -26,6 +26,9 @@ public class DiscussionPostDTO
 {
     public string Title { get; set; }
     public string DiscussionContent { get; set; }
+    public Guid MovieId { get; set; }
+    public string UserId { get; set; }
+    
 }
 
 public class Post // Principal since, this existing is based on the Dependent entity

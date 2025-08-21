@@ -3,6 +3,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 public class MovieApiService
 {
@@ -114,9 +115,30 @@ public class MovieApiService
 
     }
 
-    public async Task<Discussion?> StartDiscussionAsync(string DiscussionTitle, string DiscussionContent, Guid movieId, string UserId)
+    public async Task<DiscussionPostDTO?> StartDiscussionAsync(DiscussionPostDTO postDto)
     {
+        Discussion postDiscussion = new()
+        {
+            Id = Guid.NewGuid(),
+            Title = postDto.Title,
+            DiscussionContent = postDto.DiscussionContent,
+            MovieId = postDto.MovieId,
+            UserId = postDto.UserId,
+        };
 
+        var addEntity = await _context.AddAsync(postDiscussion);
+
+        var success = await _context.SaveChangesAsync();
+
+        if (success > 0)
+        {
+            return postDto;
+        }
+        else
+        {
+            return null;
+        }
+        
     }
 
 
