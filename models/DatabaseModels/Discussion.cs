@@ -7,18 +7,25 @@ public class Discussion // Dependent since, this need to exist for a post to exi
 {
     public Guid Id { get; set; }
     public string Title { get; set; }
+    public string DiscussionContent { get; set; }
     public Guid MovieId { get; set; }
     [Required]
-    public Movie Movie { get; set; } 
+    public Movie Movie { get; set; }
     [Required]
     public string UserId { get; set; }
-    
+
     public ApplicationUser User { get; set; }
     public List<Post>? Posts { get; set; }
     public DateTime PostedAt { get; set; } = DateTime.Now;
 
 
 
+}
+
+public class DiscussionPostDTO
+{
+    public string Title { get; set; }
+    public string DiscussionContent { get; set; }
 }
 
 public class Post // Principal since, this existing is based on the Dependent entity
