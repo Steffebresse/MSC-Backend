@@ -138,8 +138,33 @@ public class MovieApiService
         {
             return null;
         }
-        
+
     }
+
+    public async Task<PostDto?> PostToDiscussion(PostDto post, string userId)
+    {
+        Post postToDB = new()
+        {
+            UserId = userId,
+            DiscussionId = post.DiscussionId,
+            Content = post.Content
+        };
+
+        await _context.AddAsync(postToDB);
+
+        var success = await _context.SaveChangesAsync();
+
+        if (success > 0)
+        {
+            return post;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    
 
 
     

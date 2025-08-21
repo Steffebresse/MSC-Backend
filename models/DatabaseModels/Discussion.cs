@@ -43,5 +43,14 @@ public class Post // Principal since, this existing is based on the Dependent en
     public ApplicationUser User { get; set; }
     [Required]
     public string UserId { get; set; }
+    public string Content { get; set; }
 
+
+}
+
+public class PostDto
+{
+    
+    public Guid DiscussionId { get; set; }
+    public string Content { get; set; }
 }
