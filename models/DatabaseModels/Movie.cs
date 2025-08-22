@@ -69,6 +69,7 @@ public class MovieDTO
     public string Director { get; set; }
     public string Poster { get; set; }
     
+    
 
     public Movie Map(MovieDTO movie)
     {
@@ -86,8 +87,8 @@ public class MovieDTO
         {
             rating.MovieId = mapped.Id;
         }
-         mapped.Ratings = mapped.Ratings = movie.Ratings?
-            .Select(r => r.Map(r)).ToList();
+        mapped.Ratings = mapped.Ratings = movie.Ratings?
+           .Select(r => r.Map(r)).ToList();
 
 
         return mapped;

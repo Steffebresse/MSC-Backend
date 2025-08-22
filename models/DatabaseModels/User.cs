@@ -11,5 +11,5 @@ public class ApplicationUser : IdentityUser
     public List<Post>? Posts { get; set; }
     public string firstName { get; set; } = string.Empty;
 
-    
+
 }
