@@ -85,7 +85,7 @@ public class DiscussionGetOpenedDiscussion : DiscussionGetListDTO // Använd den
                 mapped.UserId = map.UserId;
                 mapped.PostCount = map.Posts.Count();
                 mapped.PostedAt = map.PostedAt;
-                mapped.Posts = [.. map.Posts.Select(p => p.Map(p))];
+                mapped.Posts = [.. map.Posts.Select(p => p.Map(p)).ToList()];
 
                 return mapped;
 
@@ -119,7 +119,7 @@ public class Post // Principal since, this existing is based on the Dependent en
 
             mapped.DiscussionId = map.DiscussionId;
             mapped.Content = map.Content;
-            mapped.UserName = map.User.UserName ?? string.Empty;
+            //mapped.UserName = map.User.UserName ?? string.Empty; // Denna funkar inte av ngn anledning kolla upp det
             mapped.userId = map.UserId;
             return mapped;
         }

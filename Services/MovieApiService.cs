@@ -1,5 +1,6 @@
 
 
+using System.Drawing;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -165,7 +166,7 @@ public class MovieApiService
         }
     }
 
-    public async Task<DiscussionGetListDTO?> GetDiscussionsAsync(Guid Id)
+    public async Task<DiscussionGetOpenedDiscussion?> GetDiscussionsAsync(Guid Id)
     {
         if (Id == Guid.Empty)
             return null;
@@ -173,12 +174,14 @@ public class MovieApiService
 
         var fetched = await _context.Discussions.Where(d => d.Id == Id).Include(p => p.Posts).FirstOrDefaultAsync();
 
-        DiscussionGetListDTO dto = new();
+        DiscussionGetOpenedDiscussion dto = new();
 
         var mapped = dto.Map(fetched);
 
         return mapped;
     }
+
+    
 
 
 
