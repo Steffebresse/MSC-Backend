@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Identity.Client;
 
 public class MovieApiService
 {
@@ -164,7 +165,20 @@ public class MovieApiService
         }
     }
 
-    public async Task<>
+    public async Task<DiscussionGetListDTO?> GetDiscussionsAsync(Guid Id)
+    {
+        if (Id == Guid.Empty)
+            return null;
+
+
+        var fetched = await _context.Discussions.Where(d => d.Id == Id).Include(p => p.Posts).FirstOrDefaultAsync();
+
+        DiscussionGetListDTO dto = new();
+
+        var mapped = dto.Map(fetched);
+
+        return mapped;
+    }
 
 
 

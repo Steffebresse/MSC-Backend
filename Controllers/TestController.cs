@@ -140,4 +140,21 @@ public class TestController : ControllerBase
 
         return BadRequest("Something went wrong creating the discussion");
     }
+
+     [Authorize]
+    [HttpPost("GetDiscussion")]
+    public async Task<IActionResult> AddPostToDiscussion([FromBody] Guid DiscussionId)
+    {
+       
+
+        if (DiscussionId == Guid.Empty)
+            return BadRequest("DiscussionId not valid");
+
+        var success = await _MApiService.GetDiscussionsAsync(DiscussionId);
+
+        if (success != null)
+            return Ok(success);
+
+        return BadRequest("Something went wrong creating the discussion");
+    }
 }
