@@ -172,7 +172,7 @@ public class MovieApiService
             return null;
 
 
-        var fetched = await _context.Discussions.Where(d => d.Id == Id).Include(p => p.Posts).FirstOrDefaultAsync();
+        var fetched = await _context.Discussions.Where(d => d.Id == Id).Include(p => p.Posts).ThenInclude(u => u.User).FirstOrDefaultAsync();
 
         DiscussionGetOpenedDiscussion dto = new();
 

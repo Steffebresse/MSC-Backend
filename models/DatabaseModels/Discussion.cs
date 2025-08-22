@@ -119,7 +119,7 @@ public class Post // Principal since, this existing is based on the Dependent en
 
             mapped.DiscussionId = map.DiscussionId;
             mapped.Content = map.Content;
-            //mapped.UserName = map.User.UserName ?? string.Empty; // Denna funkar inte av ngn anledning kolla upp det
+            mapped.UserName = map.User.UserName ?? string.Empty; // Theninclude för att gå ännu djupare i objekten!!!!
             mapped.userId = map.UserId;
             return mapped;
         }
