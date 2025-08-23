@@ -160,7 +160,7 @@ public class TestController : ControllerBase
 
     [Authorize]
     [HttpPost("GetDiscussionFromMovieId")]
-    public async Task<IActionResult> GetDiscussionFromMovieId([FromBody] Guid movieId)
+    public async Task<IActionResult> GetDiscussionFromMovieId([FromBody] Guid? movieId, string? UserId = null)
     {
         var success = await _MApiService.GetDiscussionsListed(movieId);
 

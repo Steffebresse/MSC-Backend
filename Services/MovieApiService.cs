@@ -181,7 +181,7 @@ public class MovieApiService
         return mapped;
     }
 
-    public async Task<List<DiscussionGetListDTO>?> GetDiscussionsListed(Guid movieId)
+    public async Task<List<DiscussionGetListDTO>?> GetDiscussionsListed(Guid? movieId = null, string? userId = null)
     {
         if (movieId == Guid.Empty)
         {
