@@ -181,6 +181,23 @@ public class MovieApiService
         return mapped;
     }
 
+    public async Task<List<DiscussionGetListDTO>?> GetDiscussionsListed(Guid movieId)
+    {
+        if (movieId == Guid.Empty)
+        {
+            return null;
+        }
+        var fetched = await _context.Discussions.Where(d => d.MovieId == movieId).OrderByDescending(d => d.PostedAt).ToListAsync();
+
+       
+
+         return fetched
+        .Select(src => new DiscussionGetListDTO().Map(src)) 
+        .ToList();
+
+
+    }
+
     
 
 
