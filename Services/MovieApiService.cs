@@ -187,7 +187,7 @@ public class MovieApiService
         {
             return null;
         }
-        var fetched = await _context.Discussions.Where(d => d.MovieId == movieId).OrderByDescending(d => d.PostedAt).ToListAsync();
+        var fetched = await _context.Discussions.Where(d => d.MovieId == movieId).Include(p => p.Posts).OrderByDescending(d => d.PostedAt).ToListAsync();
 
        
 

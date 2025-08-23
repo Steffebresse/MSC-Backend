@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MSC Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b81a4a33b392a5055958f7487987cf346a00a1b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+70729c1a25acf173fc3689f99f83a182b0a502a2")]
 [assembly: System.Reflection.AssemblyProductAttribute("MSC Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MSC Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

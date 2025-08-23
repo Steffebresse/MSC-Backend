@@ -141,11 +141,11 @@ public class TestController : ControllerBase
         return BadRequest("Something went wrong creating the discussion");
     }
 
-     [Authorize]
+    [Authorize]
     [HttpPost("GetDiscussion")]
     public async Task<IActionResult> AddPostToDiscussion([FromBody] Guid DiscussionId)
     {
-       
+
 
         if (DiscussionId == Guid.Empty)
             return BadRequest("DiscussionId not valid");
@@ -156,5 +156,17 @@ public class TestController : ControllerBase
             return Ok(success);
 
         return BadRequest("Something went wrong creating the discussion");
+    }
+
+    [Authorize]
+    [HttpPost("GetDiscussionFromMovieId")]
+    public async Task<IActionResult> GetDiscussionFromMovieId([FromBody] Guid movieId)
+    {
+        var success = await _MApiService.GetDiscussionsListed(movieId);
+
+        if (success == null)
+            return NotFound("Discussion Not Found");
+
+        return Ok(success);
     }
 }
