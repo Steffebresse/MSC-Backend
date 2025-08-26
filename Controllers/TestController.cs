@@ -125,7 +125,7 @@ public class TestController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("PostToDiscussion")]
+    [HttpPost("PostToDiscussion")]
     public async Task<IActionResult> AddPostToDiscussion([FromBody] PostDto postPost, UserManager<ApplicationUser> userManager)
     {
         var userId = userManager.GetUserId(User);
@@ -170,5 +170,29 @@ public class TestController : ControllerBase
         return Ok(success);
     }
 
-    
+    // ----- Delete Endpoints
+
+    [Authorize]
+    [HttpDelete("DeleteDiscussion")]
+    public async Task<IActionResult> DeleteDiscussion(Guid? discussionId)
+    {
+        if (discussionId == null || discussionId == Guid.Empty)
+            return NotFound("DiscussionId is null");
+
+        return await _MApiService.DeleteDiscussion(discussionId.Value)
+            ? Ok("Deleted successfully")
+            : NotFound("Discussion not found");
+    }
+
+    [Authorize]
+    [HttpDelete("DeletePost")]
+    public async Task<IActionResult> DeletePost(Guid? postId)
+    {
+          if (postId == null || postId == Guid.Empty)
+            return NotFound("postId is null");
+
+        return await _MApiService.DeletePost(postId.Value)
+            ? Ok("Deleted successfully")
+            : NotFound("Discussion not found");
+    }
 }

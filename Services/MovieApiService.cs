@@ -184,11 +184,11 @@ public class MovieApiService
     public async Task<List<DiscussionGetListDTO>?> GetDiscussionsListed(Guid? movieId = null, string? userId = null)
     {
         if ((movieId == null || movieId == Guid.Empty) && string.IsNullOrWhiteSpace(userId))
-        return null;
+            return null;
 
         List<Discussion> fetched = new();
 
-       if (movieId != null && movieId != Guid.Empty)
+        if (movieId != null && movieId != Guid.Empty)
         {
             fetched = await _context.Discussions
                 .Where(d => d.MovieId == movieId)
@@ -205,13 +205,31 @@ public class MovieApiService
                 .ToListAsync();
         }
 
-         return fetched
-          .Select(src => new DiscussionGetListDTO().Map(src))
-          .ToList();
+        return fetched
+         .Select(src => new DiscussionGetListDTO().Map(src))
+         .ToList();
 
 
     }
 
+    public async Task<bool> DeleteDiscussion(Guid? discussionId)
+    {
+        var deleted = await _context.Discussions.Where(D => D.Id == discussionId).ExecuteDeleteAsync();
+
+        await _context.SaveChangesAsync();
+
+        return deleted > 0;
+    }
+
+
+    public async Task<bool> DeletePost(Guid? postId)
+    {
+        var deleted = await _context.Posts.Where(D => D.Id == postId).ExecuteDeleteAsync();
+
+        await _context.SaveChangesAsync();
+
+        return deleted > 0;
+    }
     
 
 
