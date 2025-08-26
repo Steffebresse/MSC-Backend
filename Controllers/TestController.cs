@@ -210,7 +210,7 @@ public class TestController : ControllerBase
     }
     
     [Authorize]
-    [HttpPut("UpdateDiscussion")]
+    [HttpPut("UpdatePost")]
     public async Task<IActionResult> UpdatePost(Guid? postId, string content)
     {
         if (postId == null || postId == Guid.Empty)

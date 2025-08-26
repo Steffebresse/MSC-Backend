@@ -269,7 +269,7 @@ public class MovieApiService
         if (postId == null || postId == Guid.Empty)
             return null;
 
-        var updated = await _context.Posts.Where(d => d.Id == postId).FirstOrDefaultAsync();
+        var updated = await _context.Posts.Where(d => d.Id == postId).Include(u => u.User).FirstOrDefaultAsync();
         if (updated != null && content != string.Empty)
             updated.Content = content;
         else
