@@ -183,21 +183,31 @@ public class MovieApiService
 
     public async Task<List<DiscussionGetListDTO>?> GetDiscussionsListed(Guid? movieId = null, string? userId = null)
     {
-        if (movieId == Guid.Empty)
-        {
-            return null;
-        }
-       var fetched = await _context.Discussions
-            .Where(d => d.MovieId == movieId)
-            .OrderByDescending(d => d.Posts.Max(p => p.PostedAt))
-            .Include(d => d.Posts)                              
-            .ToListAsync();
+        if ((movieId == null || movieId == Guid.Empty) && string.IsNullOrWhiteSpace(userId))
+        return null;
 
-       
+        List<Discussion> fetched = new();
+
+       if (movieId != null && movieId != Guid.Empty)
+        {
+            fetched = await _context.Discussions
+                .Where(d => d.MovieId == movieId)
+                .OrderByDescending(d => d.Posts.Max(p => p.PostedAt))
+                .Include(d => d.Posts)
+                .ToListAsync();
+        }
+        else
+        {
+            fetched = await _context.Discussions
+                .Where(d => d.UserId == userId)
+                .OrderByDescending(d => d.Posts.Max(p => p.PostedAt))
+                .Include(d => d.Posts)
+                .ToListAsync();
+        }
 
          return fetched
-        .Select(src => new DiscussionGetListDTO().Map(src)) 
-        .ToList();
+          .Select(src => new DiscussionGetListDTO().Map(src))
+          .ToList();
 
 
     }

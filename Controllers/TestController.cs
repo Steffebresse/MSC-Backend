@@ -125,7 +125,7 @@ public class TestController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("PostToDiscussion")]
+    [HttpGet("PostToDiscussion")]
     public async Task<IActionResult> AddPostToDiscussion([FromBody] PostDto postPost, UserManager<ApplicationUser> userManager)
     {
         var userId = userManager.GetUserId(User);
@@ -142,7 +142,7 @@ public class TestController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("GetDiscussion")]
+    [HttpGet("GetDiscussion")]
     public async Task<IActionResult> AddPostToDiscussion([FromBody] Guid DiscussionId)
     {
 
@@ -159,14 +159,16 @@ public class TestController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("GetDiscussionFromMovieId")]
-    public async Task<IActionResult> GetDiscussionFromMovieId([FromBody] Guid? movieId, string? UserId = null)
+    [HttpGet("GetDiscussionFromMovieId")]
+    public async Task<IActionResult> GetDiscussionFromMovieId(Guid? movieId, string? UserId = null)
     {
-        var success = await _MApiService.GetDiscussionsListed(movieId);
+        var success = await _MApiService.GetDiscussionsListed(movieId, UserId);
 
         if (success == null)
             return NotFound("Discussion Not Found");
 
         return Ok(success);
     }
+
+    
 }
