@@ -188,11 +188,35 @@ public class TestController : ControllerBase
     [HttpDelete("DeletePost")]
     public async Task<IActionResult> DeletePost(Guid? postId)
     {
-          if (postId == null || postId == Guid.Empty)
+        if (postId == null || postId == Guid.Empty)
             return NotFound("postId is null");
 
         return await _MApiService.DeletePost(postId.Value)
             ? Ok("Deleted successfully")
             : NotFound("Discussion not found");
+    }
+
+    // update Endpoints
+
+    [Authorize]
+    [HttpPut("UpdateDiscussion")]
+    public async Task<IActionResult> UpdateDiscussion(Guid? discussionId, string content)
+    {
+        if (discussionId == null || discussionId == Guid.Empty)
+            return NotFound("postId is null");
+
+        return Ok(await _MApiService.UpdateDiscussion(discussionId, content));
+
+    }
+    
+    [Authorize]
+    [HttpPut("UpdateDiscussion")]
+    public async Task<IActionResult> UpdatePost(Guid? postId, string content)
+    {
+        if (postId == null || postId == Guid.Empty)
+            return NotFound("postId is null");
+
+        return Ok(await _MApiService.UpdatePost(postId, content));
+            
     }
 }

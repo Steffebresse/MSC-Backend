@@ -117,6 +117,8 @@ public class MovieApiService
 
     }
 
+    // Post endpoints
+
     public async Task<DiscussionPostDTO?> StartDiscussionAsync(DiscussionPostDTO postDto, string userId)
     {
         Discussion postDiscussion = new()
@@ -166,6 +168,8 @@ public class MovieApiService
         }
     }
 
+    // Get endpoints
+
     public async Task<DiscussionGetOpenedDiscussion?> GetDiscussionsAsync(Guid Id)
     {
         if (Id == Guid.Empty)
@@ -212,6 +216,8 @@ public class MovieApiService
 
     }
 
+    // Delete methods
+
     public async Task<bool> DeleteDiscussion(Guid? discussionId)
     {
         var deleted = await _context.Discussions.Where(D => D.Id == discussionId).ExecuteDeleteAsync();
@@ -230,7 +236,53 @@ public class MovieApiService
 
         return deleted > 0;
     }
+
+    // Update endpoints
+
+    public async Task<DiscussionGetListDTO?> UpdateDiscussion(Guid? discussionId, string content)
+    {
+        DiscussionGetListDTO success = new();
+
+        if (discussionId == null || discussionId == Guid.Empty)
+            return null;
+
+        var updated = await _context.Discussions.Where(d => d.Id == discussionId).Include(p => p.Posts).FirstOrDefaultAsync();
+        if (updated != null && content != string.Empty)
+            updated.DiscussionContent = content;
+        else
+            return null;
+
+        _context.Update(updated);
+
+        await _context.SaveChangesAsync();
+
+        return success.Map(updated);
+
+
+    }
     
+
+    public async Task<PostDto?> UpdatePost(Guid? postId, string content)
+    {
+        PostDto success = new();
+
+        if (postId == null || postId == Guid.Empty)
+            return null;
+
+        var updated = await _context.Posts.Where(d => d.Id == postId).FirstOrDefaultAsync();
+        if (updated != null && content != string.Empty)
+            updated.Content = content;
+        else
+            return null;
+
+        _context.Update(updated);
+
+        await _context.SaveChangesAsync();
+
+        return updated.Map(updated);
+
+
+    }
 
 
 
