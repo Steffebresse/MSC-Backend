@@ -223,7 +223,7 @@ public class TestController : ControllerBase
     // Admin test
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("UpdatePost")]
+    [HttpGet("AdminTest")]
     public IActionResult TestAdmin()
     {
         return Ok("Worked");
