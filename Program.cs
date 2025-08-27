@@ -51,8 +51,9 @@ public static class ServiceCollections
     {
         collection.AddAuthorization();
         collection.AddIdentityApiEndpoints<ApplicationUser>()
-            .AddEntityFrameworkStores<MyDbContext>()
-            .AddRoles<IdentityRole>();
+        .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<MyDbContext>();
+            
         
 
 
