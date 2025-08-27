@@ -16,6 +16,8 @@ public class MyDbContext : IdentityDbContext<ApplicationUser >
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
+
         base.OnModelCreating(modelBuilder); // Identity configs
 
         var seedId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");

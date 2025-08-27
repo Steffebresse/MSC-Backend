@@ -13,6 +13,7 @@ builder.Services.AddDbContext<MyDbContext>(
 builder.Services.AddTransient<MovieApiService>();
 
 builder.Services.AddIdentity();
+
 builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -50,7 +51,9 @@ public static class ServiceCollections
     {
         collection.AddAuthorization();
         collection.AddIdentityApiEndpoints<ApplicationUser>()
-            .AddEntityFrameworkStores<MyDbContext>();
+            .AddEntityFrameworkStores<MyDbContext>()
+            .AddRoles<IdentityRole>();
+        
 
 
         return collection;

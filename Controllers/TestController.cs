@@ -208,7 +208,7 @@ public class TestController : ControllerBase
         return Ok(await _MApiService.UpdateDiscussion(discussionId, content));
 
     }
-    
+
     [Authorize]
     [HttpPut("UpdatePost")]
     public async Task<IActionResult> UpdatePost(Guid? postId, string content)
@@ -217,6 +217,15 @@ public class TestController : ControllerBase
             return NotFound("postId is null");
 
         return Ok(await _MApiService.UpdatePost(postId, content));
-            
+
+    }
+
+    // Admin test
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("UpdatePost")]
+    public IActionResult TestAdmin()
+    {
+        return Ok("Worked");
     }
 }
