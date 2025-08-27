@@ -2,7 +2,7 @@
 - Nästa dags jobb, fixa RIKTIGA kontrollers och få en MVP.
 - Fixa så att appen stoppar ifall du lägger in en existerande film
 19e Augusti
-- Kunna göra Posts, Discusioner, hämta filmer och se till att allt fungerar i Synnergi!!!
+- Kunna göra Posts, Discusioner, hämta filmer och se till att allt fungerar i Synnergi!!! Fixat
 
 20e Augusti
 Läs på igen om allt du har gjort!
