@@ -98,17 +98,21 @@ public static class ServiceCollections
             string? email = config["AdminCreds:email"];
             string? passWord = config["AdminCreds:passWord"];
 
-            var adminUser = new ApplicationUser()
+            if (await userManager.FindByEmailAsync(email) == null)
             {
-                UserName = email,
-                Email = email
-            };
+                    var adminUser = new ApplicationUser()
+                    {
+                        UserName = email,
+                        Email = email
+                    };
 
 
 
-            await userManager.CreateAsync(adminUser, passWord);
+                    await userManager.CreateAsync(adminUser, passWord);
 
-            await userManager.AddToRoleAsync(adminUser, "Admin");
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
+            }
+            
         }
     }
 }
