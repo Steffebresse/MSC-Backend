@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,8 @@ app.MapControllers();
 
 app.UseHttpsRedirection();
 
+await app.RoleManager();
+
 app.Run();
 
 public static class ServiceCollections
@@ -53,11 +56,30 @@ public static class ServiceCollections
         collection.AddIdentityApiEndpoints<ApplicationUser>()
         .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<MyDbContext>();
-            
-        
+
+
 
 
         return collection;
+    }
+
+    public static async Task RoleManager(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleManager =
+                scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            var roles = new[] { "Admin", "Mod", "User" };
+
+            foreach (var role in roles)
+            {
+
+                if (!await roleManager.RoleExistsAsync(role))
+                    await roleManager.CreateAsync(new IdentityRole(role));
+
+            }
+        }
     }
 }
 
