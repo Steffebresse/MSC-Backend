@@ -45,6 +45,7 @@ app.MapControllers();
 app.UseHttpsRedirection();
 
 await app.RoleManager();
+await app.UserAdminGeneration(builder.Configuration);
 
 app.Run();
 
@@ -53,7 +54,7 @@ public static class ServiceCollections
     public static IServiceCollection AddIdentity(this IServiceCollection collection)
     {
         collection.AddAuthorization();
-        collection.AddIdentityApiEndpoints<ApplicationUser>()
+        collection.AddIdentityApiEndpoints<ApplicationUser>() // Lägger till services
         .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<MyDbContext>();
 
@@ -63,7 +64,7 @@ public static class ServiceCollections
         return collection;
     }
 
-    public static async Task RoleManager(this WebApplication app)
+    public static async Task RoleManager(this WebApplication app) // Hämtar services
     {
         using (var scope = app.Services.CreateScope())
         {
@@ -72,13 +73,42 @@ public static class ServiceCollections
 
             var roles = new[] { "Admin", "Mod", "User" };
 
-            foreach (var role in roles)
+            foreach (var role in roles) // REMINDER:::: Anledningen till att man måste hämta scopes utanför kontroller och andra sammanhang när man 
+                                        // hade kört DI för servicen, är för att DI kan inte dela ut services innan appen körts, vilket betyder om du behöver en service innan app.run()
+                                        // Så behöver du hämta den med ett scope manuellt. Annars sköts det Automatiskt. Innan app.run() så förbereds endast servicarna, men du använder kontroller
+                                        // efter app.run() exuterats, så darför kan du hämta services via DI då!
             {
 
                 if (!await roleManager.RoleExistsAsync(role))
                     await roleManager.CreateAsync(new IdentityRole(role));
 
+
+
             }
+        }
+    }
+
+    public static async Task UserAdminGeneration(this WebApplication app, ConfigurationManager config)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var userManager =
+                scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            string? email = config["AdminCreds:email"];
+            string? passWord = config["AdminCreds:passWord"];
+
+            var adminUser = new ApplicationUser()
+            {
+                UserName = email,
+                Email = email
+            };
+
+
+
+            await userManager.CreateAsync(adminUser, passWord);
+
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
 }
