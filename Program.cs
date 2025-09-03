@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,43 @@ builder.Services.AddIdentity();
 builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes ??= new Dictionary<string, OpenApiSecurityScheme>();
+
+        // Define Bearer authentication (works with Identity's opaque tokens)
+        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",         // <- important
+            BearerFormat = "Token",    // label text; could be "JWT" as well
+            In = ParameterLocation.Header,
+            Description = "Enter: {access_token}"
+        };
+
+        // Make Bearer required by default for all operations
+        document.SecurityRequirements.Add(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+
+        return Task.CompletedTask;
+    });
+});
 
 
 var app = builder.Build();
@@ -54,6 +91,12 @@ public static class ServiceCollections
 {
     public static IServiceCollection AddIdentity(this IServiceCollection collection)
     {
+        collection.AddAuthentication(options =>
+        {
+            options.DefaultScheme = IdentityConstants.BearerScheme;           // "Identity.Bearer"
+            options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
+            options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
+        });
         collection.AddAuthorization();
         collection.AddIdentityApiEndpoints<ApplicationUser>() // Lägger till services
         .AddRoles<IdentityRole>()
