@@ -93,7 +93,7 @@ public static class ServiceCollections
     {
         collection.AddAuthentication(options =>
         {
-            options.DefaultScheme = IdentityConstants.BearerScheme;           // "Identity.Bearer"
+            options.DefaultScheme = IdentityConstants.BearerScheme;          //Lägger detta som default scheme, så att appen endast kör med denna authentication, sålänge jag inte säger något annat.
             options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
             options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
         });

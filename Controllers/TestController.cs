@@ -1,11 +1,13 @@
 
 
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 [ApiController]
 public class TestController : ControllerBase
 {
@@ -222,8 +224,10 @@ public class TestController : ControllerBase
 
     // Admin test
 
-    [Authorize(Roles = "Admin")]
-    [HttpGet("AdminTest")]
+    [Authorize(
+    AuthenticationSchemes = "Identity.Application", // "Identity.Application"
+    Roles = "Admin")]
+[HttpGet("AdminTest")]
     public IActionResult TestAdmin()
     {
         return Ok("Worked");
