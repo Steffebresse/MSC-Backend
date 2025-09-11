@@ -14,7 +14,11 @@ builder.Services.AddDbContext<MyDbContext>(
 );
 
 builder.Services.AddTransient<MovieApiService>();
-builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<EmailSender>();
+builder.Services.AddSingleton<IEmailSender>(sp => sp.GetRequiredService<EmailSender>());
+builder.Services.AddSingleton<IEmailSender<ApplicationUser>>(sp => sp.GetRequiredService<EmailSender>());
+
+
 
 builder.Services.AddIdentity();
 
