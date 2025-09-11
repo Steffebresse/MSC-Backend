@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
-public class EmailSender : IEmailSender<ApplicationUser>
+public class EmailSender : IEmailSender
 {
     public Task SendConfirmationLinkAsync(ApplicationUser user, string email, string confirmationLink)
     {
@@ -10,8 +10,10 @@ public class EmailSender : IEmailSender<ApplicationUser>
 
     public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        throw new NotImplementedException();
+        // TODO: send via SMTP/SendGrid/MailKit/etc.
+        return Task.CompletedTask;
     }
+
 
     public Task SendPasswordResetCodeAsync(ApplicationUser user, string email, string resetCode)
     {

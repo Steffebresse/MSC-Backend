@@ -14,7 +14,7 @@ builder.Services.AddDbContext<MyDbContext>(
 );
 
 builder.Services.AddTransient<MovieApiService>();
-builder.Services.AddSingleton<EmailSender, IEmailSender<ApplicationUser>>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.AddIdentity();
 
