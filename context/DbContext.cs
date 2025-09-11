@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class MyDbContext : IdentityDbContext<ApplicationUser >
+public class MyDbContext : IdentityDbContext<ApplicationUser>
 {
 
     public DbSet<Movie> Movies { get; set; }

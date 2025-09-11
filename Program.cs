@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -13,9 +14,15 @@ builder.Services.AddDbContext<MyDbContext>(
 );
 
 builder.Services.AddTransient<MovieApiService>();
+builder.Services.AddSingleton<EmailSender, IEmailSender<ApplicationUser>>();
 
 builder.Services.AddIdentity();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = true;
+});
+ 
 builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

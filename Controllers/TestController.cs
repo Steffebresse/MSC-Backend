@@ -13,10 +13,12 @@ public class TestController : ControllerBase
 {
     private readonly MyDbContext _context;
     private readonly MovieApiService _MApiService;
-    public TestController(MyDbContext context, MovieApiService MApiService)
+    private readonly EmailSender _emailSender;
+    public TestController(MyDbContext context, MovieApiService MApiService, EmailSender emailsender)
     {
         _context = context;
         _MApiService = MApiService;
+        _emailSender = emailsender;
     }
 
 
@@ -27,6 +29,13 @@ public class TestController : ControllerBase
         var returnthis = "Work";
         return Ok(returnthis);
     }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register()
+    {
+        
+    }
+
     [Authorize]
     [HttpPost("Logout")]
     public async Task<IActionResult> Logout(SignInManager<ApplicationUser> signInManager)
@@ -221,13 +230,14 @@ public class TestController : ControllerBase
         return Ok(await _MApiService.UpdatePost(postId, content));
 
     }
+    
 
     // Admin test
 
     [Authorize(
     AuthenticationSchemes = "Identity.Application", // "Identity.Application"
     Roles = "Admin")]
-[HttpGet("AdminTest")]
+    [HttpGet("AdminTest")]
     public IActionResult TestAdmin()
     {
         return Ok("Worked");
