@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using WebPWrecover.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,12 @@ builder.Services.AddDbContext<MyDbContext>(
     options => options.UseSqlServer(connectionString)
 );
 
+builder.Services.Configure<AuthMessageSenderOptions>(
+    builder.Configuration.GetSection(AuthMessageSenderOptions.Position));
+
 builder.Services.AddTransient<MovieApiService>();
-builder.Services.AddSingleton<EmailSender>();
-builder.Services.AddSingleton<IEmailSender>(sp => sp.GetRequiredService<EmailSender>());
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>>(sp => sp.GetRequiredService<EmailSender>());
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 
 

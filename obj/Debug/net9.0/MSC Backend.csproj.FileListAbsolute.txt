@@ -337,3 +337,6 @@ C:/Users/Stefan/Desktop/Developing/MSC App/MSC Backend/bin/Debug/net9.0/zh-Hant/
 /Volumes/HomeX/Developments/Msc/MSC-Backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 C:/Users/Stefan/Desktop/Developing/MSC App/MSC Backend/obj/Debug/net9.0/MSC Backend.sourcelink.json
 C:/Users/Stefan/Desktop/Developing/MSC App/MSC Backend/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Volumes/HomeX/Developments/Msc/MSC-Backend/bin/Debug/net9.0/Newtonsoft.Json.dll
+/Volumes/HomeX/Developments/Msc/MSC-Backend/bin/Debug/net9.0/SendGrid.dll
+/Volumes/HomeX/Developments/Msc/MSC-Backend/bin/Debug/net9.0/StarkbankEcdsa.dll

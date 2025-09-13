@@ -1,27 +1,59 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
-public sealed class EmailSender :
-    IEmailSender,                          // non-generic (used by your controllers)
-    IEmailSender<ApplicationUser>          // generic (required by MapIdentityApi<TUser>())
+namespace WebPWrecover.Services;
+
+public class EmailSender : IEmailSender
 {
-    // ===== Low-level method you’ll call from your controllers =====
-    public Task SendEmailAsync(string email, string subject, string htmlMessage)
+    private readonly ILogger _logger;
+
+    public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor,
+                       ILogger<EmailSender> logger)
     {
-        // TODO: implement SMTP / SendGrid / MailKit
-        return Task.CompletedTask;
+        Options = optionsAccessor.Value;
+        _logger = logger;
     }
 
-    // ===== Methods Identity’s minimal APIs expect at startup =====
-    public Task SendConfirmationLinkAsync(ApplicationUser user, string email, string confirmationLink)
-        => SendEmailAsync(email, "Confirm your email",
-            $"<p>Thanks for registering!</p><p><a href=\"{confirmationLink}\">Confirm account</a></p>");
+    public AuthMessageSenderOptions Options { get; set; } //Set with Secret Manager.
 
-    public Task SendPasswordResetLinkAsync(ApplicationUser user, string email, string resetLink)
-        => SendEmailAsync(email, "Reset your password",
-            $"<p>Reset your password:</p><p><a href=\"{resetLink}\">Reset password</a></p>");
+    public async Task SendEmailAsync(string toEmail, string subject, string message)
+    {
+        if (string.IsNullOrEmpty(Options.SendGridKey))
+        {
+            throw new Exception("Null SendGridKey");
+        }
+        await Execute(Options.SendGridKey, subject, message, toEmail);
+    }
 
-    public Task SendPasswordResetCodeAsync(ApplicationUser user, string email, string resetCode)
-        => SendEmailAsync(email, "Your reset code",
-            $"<p>Code: <strong>{resetCode}</strong></p>");
+    public async Task Execute(string apiKey, string subject, string message, string toEmail)
+    {
+        var client = new SendGridClient(apiKey);
+        var msg = new SendGridMessage()
+        {
+            From = new EmailAddress("iminyourgameboy@gmail.com", "Password Recovery"),
+            Subject = subject,
+            PlainTextContent = message,
+            HtmlContent = message
+        };
+        msg.AddTo(new EmailAddress(toEmail));
+
+        // Disable click tracking.
+        // See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
+        msg.SetClickTracking(false, false);
+        var response = await client.SendEmailAsync(msg);
+        _logger.LogInformation(response.IsSuccessStatusCode 
+                               ? $"Email to {toEmail} queued successfully!"
+                               : $"Failure Email to {toEmail}");
+    }
+}
+
+
+public class AuthMessageSenderOptions
+{
+    public const string Position = "EmailService";
+
+    public string? SendGridKey { get; set; } = string.Empty;
+    public string? EmailRecoveryKey { get; set; } = string.Empty;
 }

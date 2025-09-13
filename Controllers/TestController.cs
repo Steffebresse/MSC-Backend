@@ -9,19 +9,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using WebPWrecover.Services;
 
 [ApiController]
 public class TestController : ControllerBase
 {
     private readonly MyDbContext _context;
     private readonly MovieApiService _MApiService;
-    private readonly EmailSender _emailSender;
+   
     private readonly UserManager<ApplicationUser> _userManager;
-    public TestController(MyDbContext context, MovieApiService MApiService, EmailSender emailsender, UserManager<ApplicationUser> userManager)
+    public TestController(MyDbContext context, MovieApiService MApiService, UserManager<ApplicationUser> userManager)
     {
         _context = context;
         _MApiService = MApiService;
-        _emailSender = emailsender;
+        
         _userManager = userManager;
     }
 
@@ -34,64 +35,7 @@ public class TestController : ControllerBase
         return Ok(returnthis);
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest req)
-    {
-        // Create the user object
-        var user = new ApplicationUser
-        {
-            UserName = req.Email,
-            Email = req.Email
-        };
-
-        // Create user with hashed password
-        var result = await _userManager.CreateAsync(user, req.Password);
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(new
-            {
-                Message = "Registration failed",
-                Errors = result.Errors
-            });
-        }
-
-        // Generate confirmation token
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var tokenEncoded = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-
-        // Build link (to API or frontend)
-        var confirmUrl = Url.Action(
-            nameof(ConfirmEmail),
-            "Test", // controller name without "Controller"
-            new { userId = user.Id, code = tokenEncoded },
-            protocol: Request.Scheme);
-
-        // Send email
-        await _emailSender.SendEmailAsync(
-            req.Email,
-            "Confirm your email",
-            $"Please confirm your account by clicking this link: {confirmUrl}");
-
-        return Ok(new { Message = "Registration successful. Check your email to confirm your account." });
-    }
-
-    [HttpGet("confirm-email")]
-    public async Task<IActionResult> ConfirmEmail(string userId, string code)
-    {
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null) return BadRequest("Invalid user");
-
-        var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-        var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(new { Message = "Email confirmation failed", Errors = result.Errors });
-        }
-
-        return Ok(new { Message = "Email confirmed successfully!" });
-    }
+    
 
    
 
