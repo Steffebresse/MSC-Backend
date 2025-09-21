@@ -7,15 +7,73 @@
 
 <p role="status">Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="()=>currentCount++">Click me</button>
+
+<div class="m-4">
+    <input type="text" @bind="text" @bind:event="oninput" @bind:after="Search"/>
+    <p>@text</p>
+    <p >@result</p>
+</div>
+
+<div class="m-4">
+    <input type="text" @onkeydown="HandleKeyDown"/>
+    <p>@keyText</p>
+</div>
+
+<div style="border: 1px solid black" @onmouseover="MouseOver">
+    <p >@divText</p>
+</div>
+
+<div style="border: 1px solid black">
+    <input  @onfocus="HandleFocus" @onblur="HandleBlur" type="text"/>
+    <p >@keyText</p>
+</div>
 
 @code {
     private int currentCount = 0;
     [Parameter]
     public int IncrementAmount {get; set; }= 1;
+    string text = "";
+
+    string keyText = "";
+
+    string divText = "";
+
+    string result = "";
 
     private void IncrementCount()
     {
         currentCount+=IncrementAmount;
+    }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        text = (string)e.Value!;
+    }
+
+    private void MouseOver(MouseEventArgs e)
+    {
+        divText="You are hovering over the div";
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        keyText=e.Key;
+    }
+
+    private void HandleFocus(FocusEventArgs e)
+    {
+        keyText="You are not typing";
+    }
+
+    private void HandleBlur(FocusEventArgs e)
+    {
+        keyText="You are not typing. You have clicked away";
+    }
+
+    async Task Search()
+    {
+        await Task.Delay(3000);
+        result = "150 results were found";
     }
 }
